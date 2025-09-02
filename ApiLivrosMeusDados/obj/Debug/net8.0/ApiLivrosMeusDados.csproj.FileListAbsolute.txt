@@ -132,3 +132,4 @@ D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\refint\ApiLivrosMeusDa
 D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\ApiLivrosMeusDados.pdb
 D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\ApiLivrosMeusDados.genruntimeconfig.cache
 D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\ref\ApiLivrosMeusDados.dll
+D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\ApiLivrosMeusDados.sourcelink.json
