@@ -1,0 +1,39 @@
+{
+  "Version": 1,
+  "Hash": "Vrl8JHK9dSuQzDRRcaNjgAAj4VhmRs5DRaFOQwziC6k=",
+  "Source": "ApiLivrosMeusDados",
+  "BasePath": "_content/ApiLivrosMeusDados",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "ApiLivrosMeusDados\\wwwroot",
+      "Source": "ApiLivrosMeusDados",
+      "ContentRoot": "D:\\ApiLivrosMeusDados\\ApiLivrosMeusDados\\wwwroot\\",
+      "BasePath": "_content/ApiLivrosMeusDados",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "D:\\ApiLivrosMeusDados\\ApiLivrosMeusDados\\wwwroot\\index.html",
+      "SourceId": "ApiLivrosMeusDados",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\ApiLivrosMeusDados\\ApiLivrosMeusDados\\wwwroot\\",
+      "BasePath": "_content/ApiLivrosMeusDados",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    }
+  ]
+}

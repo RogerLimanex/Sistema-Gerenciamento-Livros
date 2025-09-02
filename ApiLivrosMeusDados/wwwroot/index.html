@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciamento de Livros e Dados Pessoais</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h2 {
+            margin-top: 30px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #f0f0f0;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input,
+        button {
+            margin: 5px 0;
+            padding: 6px;
+        }
+
+        .actions button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Sistema de Gerenciamento</h1>
+
+    <!-- ================== DADOS PESSOAIS ================== -->
+    <h2>Dados Pessoais</h2>
+    <table id="pessoasTable">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>RU</th>
+                <th>Curso</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h3>Adicionar/Editar Pessoa</h3>
+    <form id="pessoaForm">
+        <input type="hidden" id="pessoaId">
+        <input type="text" id="nome" placeholder="Nome" required><br>
+        <input type="text" id="ru" placeholder="RU" required><br>
+        <input type="text" id="curso" placeholder="Curso" required><br>
+        <button type="submit">Salvar</button>
+        <button type="button" onclick="resetPessoaForm()">Cancelar</button>
+    </form>
+
+    <!-- ================== LIVROS ================== -->
+    <h2>Livros</h2>
+    <table id="livrosTable">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Autores</th>
+                <th>Editora</th>
+                <th>Ano</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h3>Adicionar/Editar Livro</h3>
+    <form id="livroForm">
+        <input type="hidden" id="livroId">
+        <input type="text" id="titulo" placeholder="Título" required><br>
+        <input type="text" id="autores" placeholder="Autores" required><br>
+        <input type="text" id="editora" placeholder="Editora" required><br>
+        <input type="number" id="ano" placeholder="Ano" required><br>
+        <button type="submit">Salvar</button>
+        <button type="button" onclick="resetLivroForm()">Cancelar</button>
+    </form>
+
+    <script>
+        // Agora usa o mesmo host/porta do servidor
+        const apiBase = "/api";
+
+        // ================== PESSOAS ==================
+        async function carregarPessoas() {
+            const res = await fetch(`${apiBase}/pessoas`);
+            const data = await res.json();
+            const tbody = document.querySelector("#pessoasTable tbody");
+            tbody.innerHTML = "";
+            data.forEach(p => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+          <td>${p.nome}</td>
+          <td>${p.ru}</td>
+          <td>${p.curso}</td>
+          <td class="actions">
+            <button onclick="editarPessoa(${p.id}, '${p.nome}', '${p.ru}', '${p.curso}')">Editar</button>
+            <button onclick="deletarPessoa(${p.id})">Excluir</button>
+          </td>
+        `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function salvarPessoa(e) {
+            e.preventDefault();
+            const id = document.getElementById("pessoaId").value;
+            const pessoa = {
+                nome: document.getElementById("nome").value,
+                ru: document.getElementById("ru").value,
+                curso: document.getElementById("curso").value
+            };
+
+            if (id) {
+                await fetch(`${apiBase}/pessoas/${id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(pessoa)
+                });
+            } else {
+                await fetch(`${apiBase}/pessoas`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(pessoa)
+                });
+            }
+            resetPessoaForm();
+            carregarPessoas();
+        }
+
+        function editarPessoa(id, nome, ru, curso) {
+            document.getElementById("pessoaId").value = id;
+            document.getElementById("nome").value = nome;
+            document.getElementById("ru").value = ru;
+            document.getElementById("curso").value = curso;
+        }
+
+        async function deletarPessoa(id) {
+            await fetch(`${apiBase}/pessoas/${id}`, { method: "DELETE" });
+            carregarPessoas();
+        }
+
+        function resetPessoaForm() {
+            document.getElementById("pessoaId").value = "";
+            document.getElementById("pessoaForm").reset();
+        }
+
+        document.getElementById("pessoaForm").addEventListener("submit", salvarPessoa);
+
+        // ================== LIVROS ==================
+        async function carregarLivros() {
+            const res = await fetch(`${apiBase}/livros`);
+            const data = await res.json();
+            const tbody = document.querySelector("#livrosTable tbody");
+            tbody.innerHTML = "";
+            data.forEach(l => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+          <td>${l.titulo}</td>
+          <td>${l.autores}</td>
+          <td>${l.editora}</td>
+          <td>${l.ano}</td>
+          <td class="actions">
+            <button onclick="editarLivro(${l.id}, '${l.titulo}', '${l.autores}', '${l.editora}', ${l.ano})">Editar</button>
+            <button onclick="deletarLivro(${l.id})">Excluir</button>
+          </td>
+        `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function salvarLivro(e) {
+            e.preventDefault();
+            const id = document.getElementById("livroId").value;
+            const livro = {
+                titulo: document.getElementById("titulo").value,
+                autores: document.getElementById("autores").value,
+                editora: document.getElementById("editora").value,
+                ano: parseInt(document.getElementById("ano").value)
+            };
+
+            if (id) {
+                await fetch(`${apiBase}/livros/${id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(livro)
+                });
+            } else {
+                await fetch(`${apiBase}/livros`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(livro)
+                });
+            }
+            resetLivroForm();
+            carregarLivros();
+        }
+
+        function editarLivro(id, titulo, autores, editora, ano) {
+            document.getElementById("livroId").value = id;
+            document.getElementById("titulo").value = titulo;
+            document.getElementById("autores").value = autores;
+            document.getElementById("editora").value = editora;
+            document.getElementById("ano").value = ano;
+        }
+
+        async function deletarLivro(id) {
+            await fetch(`${apiBase}/livros/${id}`, { method: "DELETE" });
+            carregarLivros();
+        }
+
+        function resetLivroForm() {
+            document.getElementById("livroId").value = "";
+            document.getElementById("livroForm").reset();
+        }
+
+        document.getElementById("livroForm").addEventListener("submit", salvarLivro);
+
+        // ================== INICIALIZAÇÃO ==================
+        carregarPessoas();
+        carregarLivros();
+    </script>
+</body>
+
+</html>
