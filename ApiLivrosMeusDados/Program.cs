@@ -3,18 +3,20 @@ using ApiLivrosMeusDados.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// EF Core + SQLite
+// Configura o banco de dados SQLite
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
 
-// Controllers + Swagger
+// Adiciona os controladores (API REST)
 builder.Services.AddControllers();
+
+// Adiciona suporte ao Swagger (documentação da API)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Migrar e semear na subida
+// Garante que o banco de dados existe e aplica as migrações
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -27,7 +29,7 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-// Habilita servir arquivos estáticos (wwwroot)
+// Permite servir arquivos estáticos (index.html em wwwroot)
 app.UseStaticFiles();
 
 app.UseAuthorization();
@@ -35,7 +37,7 @@ app.UseAuthorization();
 // Controllers (API)
 app.MapControllers();
 
-// Fallback: se não encontrar rota, abre o index.html
+// Caso nenhuma rota seja encontrada, retorna index.html
 app.MapFallbackToFile("index.html");
 
 app.Run();

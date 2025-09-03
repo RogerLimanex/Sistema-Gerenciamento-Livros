@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiLivrosMeusDados.Data;
-using ApiLivrosMeusDados.Models; // 👈 Importa MeusDados
+using ApiLivrosMeusDados.Models;
 
+// Rota base da API → /api/meusdados
 [ApiController]
 [Route("api/[controller]")]
 public class MeusDadosController : ControllerBase
@@ -14,14 +15,14 @@ public class MeusDadosController : ControllerBase
         _context = context;
     }
 
-    // GET: api/MeusDados
+    // GET: api/meusdados → retorna todos os registros (apenas 1 no nosso caso)
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MeusDados>>> GetMeusDados()
     {
         return await _context.MeusDados.ToListAsync();
     }
 
-    // GET: api/MeusDados/1
+    // GET: api/meusdados/1 → retorna os dados pessoais
     [HttpGet("{id}")]
     public async Task<ActionResult<MeusDados>> GetMeusDado(int id)
     {
@@ -30,7 +31,7 @@ public class MeusDadosController : ControllerBase
         return dado;
     }
 
-    // POST: api/MeusDados
+    // POST: api/meusdados → insere novos dados pessoais
     [HttpPost]
     public async Task<ActionResult<MeusDados>> PostMeusDado(MeusDados dado)
     {
@@ -39,7 +40,7 @@ public class MeusDadosController : ControllerBase
         return CreatedAtAction(nameof(GetMeusDado), new { id = dado.Id }, dado);
     }
 
-    // PUT: api/MeusDados/1
+    // PUT: api/meusdados/1 → atualiza os dados
     [HttpPut("{id}")]
     public async Task<IActionResult> PutMeusDado(int id, MeusDados dado)
     {
@@ -49,7 +50,7 @@ public class MeusDadosController : ControllerBase
         return NoContent();
     }
 
-    // DELETE: api/MeusDados/1
+    // DELETE: api/meusdados/1 → apaga os dados
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteMeusDado(int id)
     {

@@ -4,18 +4,22 @@ using ApiLivrosMeusDados.Data;
 
 namespace ApiLivrosMeusDados.Data
 {
+    // Classe que gerencia a conexão com o banco de dados
+    // e define as tabelas que serão criadas
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
+        // Cria uma tabela Books no banco
         public DbSet<Book> Books { get; set; }
+        // Cria uma tabela MeusDados no banco
         public DbSet<MeusDados> MeusDados { get; set; }
 
+        // Método usado para inserir dados iniciais (seeding)
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Livros (atenção: Autores no plural)
+            // Inserindo dados iniciais da tabela Books
             modelBuilder.Entity<Book>().HasData(
                 new Book
                 {
@@ -46,7 +50,7 @@ namespace ApiLivrosMeusDados.Data
                 }
             );
 
-            // Seus dados
+            // Inserindo dados iniciais da tabela MeusDados
             modelBuilder.Entity<MeusDados>().HasData(
                 new MeusDados
                 {
@@ -57,5 +61,6 @@ namespace ApiLivrosMeusDados.Data
                 }
             );
         }
+
     }
 }

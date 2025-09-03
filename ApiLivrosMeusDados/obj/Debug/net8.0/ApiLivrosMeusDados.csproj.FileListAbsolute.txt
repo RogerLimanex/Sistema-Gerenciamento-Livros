@@ -118,6 +118,7 @@ D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\ApiLivrosMeusDados.Ass
 D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\ApiLivrosMeusDados.csproj.CoreCompileInputs.cache
 D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\ApiLivrosMeusDados.MvcApplicationPartsAssemblyInfo.cs
 D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\ApiLivrosMeusDados.MvcApplicationPartsAssemblyInfo.cache
+D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\ApiLivrosMeusDados.sourcelink.json
 D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\staticwebassets.build.json
 D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\staticwebassets.development.json
 D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\staticwebassets\msbuild.ApiLivrosMeusDados.Microsoft.AspNetCore.StaticWebAssets.props
@@ -132,4 +133,3 @@ D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\refint\ApiLivrosMeusDa
 D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\ApiLivrosMeusDados.pdb
 D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\ApiLivrosMeusDados.genruntimeconfig.cache
 D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\ref\ApiLivrosMeusDados.dll
-D:\ApiLivrosMeusDados\ApiLivrosMeusDados\obj\Debug\net8.0\ApiLivrosMeusDados.sourcelink.json
