@@ -4,106 +4,145 @@
 <head>
     <meta charset="utf-8" />
     <title>Gerenciamento de Livros e Dados Pessoais</title>
-
-    <!-- CSS externo -->
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <!-- Título principal -->
-    <h1>Sistema de Gerenciamento</h1>
+    <!-- ================= LOGIN ================= -->
+    <div id="loginDiv">
+        <h2>Login</h2>
+        <form id="loginForm" onsubmit="event.preventDefault(); login();">
+            <input type="text" id="username" placeholder="Usuário" required><br>
+            <input type="password" id="password" placeholder="Senha" required><br>
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
 
-    <!-- ==================== DADOS PESSOAIS ==================== -->
-    <h2>Dados Pessoais</h2>
-    <table id="pessoasTable">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>RU</th>
-                <th>Curso</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <!-- ================= CONTEÚDO PRINCIPAL ================= -->
+    <div id="mainDiv" style="display:none;">
+        <h1>Sistema de Gerenciamento</h1>
 
-    <!-- Formulário para adicionar ou editar pessoa -->
-    <h3>Adicionar/Editar Pessoa</h3>
-    <form id="pessoaForm">
-        <input type="hidden" id="pessoaId">
-        <input type="text" id="nome" placeholder="Nome" required><br>
-        <input type="text" id="ru" placeholder="RU" required><br>
-        <input type="text" id="curso" placeholder="Curso" required><br>
-        <button type="submit">Salvar</button>
-        <button type="button" onclick="resetPessoaForm()">Cancelar</button>
-    </form>
+        <!-- Dados Pessoais -->
+        <h2>Dados Pessoais</h2>
+        <table id="pessoasTable">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>RU</th>
+                    <th>Curso</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
 
-    <!-- ==================== LIVROS ==================== -->
-    <h2>Livros</h2>
-    <table id="livrosTable">
-        <thead>
-            <tr>
-                <th>Título</th>
-                <th>Autores</th>
-                <th>Editora</th>
-                <th>Cidade</th>
-                <th>Ano</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+        <h3>Adicionar/Editar Pessoa</h3>
+        <form id="pessoaForm">
+            <input type="hidden" id="pessoaId">
+            <input type="text" id="nome" placeholder="Nome" required><br>
+            <input type="text" id="ru" placeholder="RU" required><br>
+            <input type="text" id="curso" placeholder="Curso" required><br>
+            <button type="submit">Salvar</button>
+            <button type="button" onclick="resetPessoaForm()">Cancelar</button>
+        </form>
 
-    <!-- Formulário para adicionar ou editar livro -->
-    <h3>Adicionar/Editar Livro</h3>
-    <form id="livroForm">
-        <input type="hidden" id="livroId">
-        <input type="text" id="titulo" placeholder="Título" required><br>
-        <input type="text" id="autores" placeholder="Autores" required><br>
-        <input type="text" id="editora" placeholder="Editora" required><br>
-        <input type="text" id="cidade" placeholder="Cidade"><br>
-        <input type="number" id="ano" placeholder="Ano" required><br>
-        <button type="submit">Salvar</button>
-        <button type="button" onclick="resetLivroForm()">Cancelar</button>
-    </form>
+        <!-- Livros -->
+        <h2>Livros</h2>
+        <table id="livrosTable">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Autores</th>
+                    <th>Editora</th>
+                    <th>Cidade</th>
+                    <th>Ano</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
 
-    <!-- ==================== SCRIPT ==================== -->
+        <h3>Adicionar/Editar Livro</h3>
+        <form id="livroForm">
+            <input type="hidden" id="livroId">
+            <input type="text" id="titulo" placeholder="Título" required><br>
+            <input type="text" id="autores" placeholder="Autores" required><br>
+            <input type="text" id="editora" placeholder="Editora" required><br>
+            <input type="text" id="cidade" placeholder="Cidade"><br>
+            <input type="number" id="ano" placeholder="Ano" required><br>
+            <button type="submit">Salvar</button>
+            <button type="button" onclick="resetLivroForm()">Cancelar</button>
+        </form>
+    </div>
+
     <script>
-        const apiBase = "/api"; // URL base da API
+        const apiBase = "/api";
+        let token = null; // Armazena JWT
 
-        // ---------- MEUS DADOS ----------
-        let meusDadosId = null;
+        // ================= LOGIN =================
+        async function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
 
-        async function carregarPessoas() {
-            const res = await fetch(`${apiBase}/MeusDados`);
+            const res = await fetch(`${apiBase}/auth/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            });
+
             const data = await res.json();
-            const tbody = document.querySelector("#pessoasTable tbody");
-            tbody.innerHTML = "";
 
-            if (data.length > 0) {
-                meusDadosId = data[0].id;
-                const p = data[0];
-
-                // Linha da tabela com data-label para responsividade
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td data-label="Nome">${p.nome}</td>
-                    <td data-label="RU">${p.ru}</td>
-                    <td data-label="Curso">${p.curso}</td>
-                    <td data-label="Ações">
-                        <button onclick="editarPessoa(${p.id}, '${p.nome}', '${p.ru}', '${p.curso}')">Editar</button>
-                        <button onclick="deletarPessoa(${p.id})">Excluir</button>
-                    </td>`;
-                tbody.appendChild(tr);
-
-                // Preenche formulário
-                document.getElementById("nome").value = p.nome;
-                document.getElementById("ru").value = p.ru;
-                document.getElementById("curso").value = p.curso;
-                document.getElementById("pessoaId").value = p.id;
+            if (res.ok) {
+                token = data.token;
+                localStorage.setItem("token", token);
+                document.getElementById("loginDiv").style.display = "none";
+                document.getElementById("mainDiv").style.display = "block";
+                carregarPessoas();
+                carregarLivros();
             } else {
-                meusDadosId = null;
+                alert(data.message);
             }
+        }
+
+        // ================= FETCH AUTORIZADO =================
+        async function fetchAuth(url, options = {}) {
+            options.headers = {
+                ...(options.headers || {}),
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            };
+            const res = await fetch(url, options);
+            if (!res.ok) throw new Error("Erro na requisição");
+            return await res.json();
+        }
+
+        // ================= DADOS PESSOAIS =================
+        let meusDadosId = null;
+        async function carregarPessoas() {
+            try {
+                const data = await fetchAuth(`${apiBase}/MeusDados`);
+                const tbody = document.querySelector("#pessoasTable tbody");
+                tbody.innerHTML = "";
+                if (data.length > 0) {
+                    meusDadosId = data[0].id;
+                    const p = data[0];
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td data-label="Nome">${p.nome}</td>
+                        <td data-label="RU">${p.ru}</td>
+                        <td data-label="Curso">${p.curso}</td>
+                        <td data-label="Ações">
+                            <button onclick="editarPessoa(${p.id}, '${p.nome}', '${p.ru}', '${p.curso}')">Editar</button>
+                            <button onclick="deletarPessoa(${p.id})">Excluir</button>
+                        </td>`;
+                    tbody.appendChild(tr);
+
+                    document.getElementById("nome").value = p.nome;
+                    document.getElementById("ru").value = p.ru;
+                    document.getElementById("curso").value = p.curso;
+                    document.getElementById("pessoaId").value = p.id;
+                } else meusDadosId = null;
+            } catch (e) { alert("Erro ao carregar dados pessoais"); }
         }
 
         async function salvarPessoa(e) {
@@ -114,21 +153,11 @@
                 ru: document.getElementById("ru").value,
                 curso: document.getElementById("curso").value
             };
-
             if (id) {
-                await fetch(`${apiBase}/MeusDados/${id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id: parseInt(id), ...pessoa })
-                });
+                await fetchAuth(`${apiBase}/MeusDados/${id}`, { method: "PUT", body: JSON.stringify({ id: parseInt(id), ...pessoa }) });
             } else {
-                await fetch(`${apiBase}/MeusDados`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(pessoa)
-                });
+                await fetchAuth(`${apiBase}/MeusDados`, { method: "POST", body: JSON.stringify(pessoa) });
             }
-
             resetPessoaForm();
             carregarPessoas();
         }
@@ -141,45 +170,38 @@
         }
 
         async function deletarPessoa(id) {
-            await fetch(`${apiBase}/MeusDados/${id}`, { method: "DELETE" });
+            await fetchAuth(`${apiBase}/MeusDados/${id}`, { method: "DELETE" });
             resetPessoaForm();
             carregarPessoas();
         }
 
-        function resetPessoaForm() {
-            document.getElementById("pessoaId").value = "";
-            document.getElementById("pessoaForm").reset();
-        }
-
+        function resetPessoaForm() { document.getElementById("pessoaForm").reset(); document.getElementById("pessoaId").value = ""; }
         document.getElementById("pessoaForm").addEventListener("submit", salvarPessoa);
 
-        // ---------- LIVROS ----------
+        // ================= LIVROS =================
         async function carregarLivros() {
-            const res = await fetch(`${apiBase}/Books`);
-            const data = await res.json();
-            const tbody = document.querySelector("#livrosTable tbody");
-            tbody.innerHTML = "";
-
-            data.forEach(l => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td data-label="Título">${l.titulo}</td>
-                    <td data-label="Autores">${l.autores}</td>
-                    <td data-label="Editora">${l.editora}</td>
-                    <td data-label="Cidade">${l.cidade ?? ''}</td>
-                    <td data-label="Ano">${l.ano}</td>
-                    <td data-label="Ações">
-                        <button onclick="editarLivro(${l.id}, '${escapeJs(l.titulo)}', '${escapeJs(l.autores)}', '${escapeJs(l.editora)}', '${escapeJs(l.cidade)}', ${l.ano})">Editar</button>
-                        <button onclick="deletarLivro(${l.id})">Excluir</button>
-                    </td>`;
-                tbody.appendChild(tr);
-            });
+            try {
+                const data = await fetchAuth(`${apiBase}/Books`);
+                const tbody = document.querySelector("#livrosTable tbody");
+                tbody.innerHTML = "";
+                data.forEach(l => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td data-label="Título">${l.titulo}</td>
+                        <td data-label="Autores">${l.autores}</td>
+                        <td data-label="Editora">${l.editora}</td>
+                        <td data-label="Cidade">${l.cidade ?? ''}</td>
+                        <td data-label="Ano">${l.ano}</td>
+                        <td data-label="Ações">
+                            <button onclick="editarLivro(${l.id}, '${escapeJs(l.titulo)}', '${escapeJs(l.autores)}', '${escapeJs(l.editora)}', '${escapeJs(l.cidade)}', ${l.ano})">Editar</button>
+                            <button onclick="deletarLivro(${l.id})">Excluir</button>
+                        </td>`;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) { alert("Erro ao carregar livros"); }
         }
 
-        function escapeJs(s) {
-            if (!s) return '';
-            return s.replace(/'/g, "\\'").replace(/\n/g, "\\n");
-        }
+        function escapeJs(s) { return s ? s.replace(/'/g, "\\'").replace(/\n/g, "\\n") : ''; }
 
         async function salvarLivro(e) {
             e.preventDefault();
@@ -191,21 +213,11 @@
                 cidade: document.getElementById("cidade").value,
                 ano: parseInt(document.getElementById("ano").value)
             };
-
             if (id) {
-                await fetch(`${apiBase}/Books/${id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id: parseInt(id), ...livro })
-                });
+                await fetchAuth(`${apiBase}/Books/${id}`, { method: "PUT", body: JSON.stringify({ id: parseInt(id), ...livro }) });
             } else {
-                await fetch(`${apiBase}/Books`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(livro)
-                });
+                await fetchAuth(`${apiBase}/Books`, { method: "POST", body: JSON.stringify(livro) });
             }
-
             resetLivroForm();
             carregarLivros();
         }
@@ -220,20 +232,12 @@
         }
 
         async function deletarLivro(id) {
-            await fetch(`${apiBase}/Books/${id}`, { method: "DELETE" });
+            await fetchAuth(`${apiBase}/Books/${id}`, { method: "DELETE" });
             carregarLivros();
         }
 
-        function resetLivroForm() {
-            document.getElementById("livroId").value = "";
-            document.getElementById("livroForm").reset();
-        }
-
+        function resetLivroForm() { document.getElementById("livroForm").reset(); document.getElementById("livroId").value = ""; }
         document.getElementById("livroForm").addEventListener("submit", salvarLivro);
-
-        // ---------- Inicialização ----------
-        carregarPessoas();
-        carregarLivros();
     </script>
 </body>
 
